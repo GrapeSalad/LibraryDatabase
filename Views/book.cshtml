@@ -1,0 +1,26 @@
+<h1>Add Boook</h1>
+<hr />
+
+<h2>Book:</h2>
+@if (Model.Count != 0)
+{
+  <ul>
+    @foreach (var book in Model)
+    {
+      <li><a href='/books/@book.GetId()'>@book.GetTitle()</a></li>
+    }
+  </ul>
+}
+else
+{
+  <p>AINT NOTHIN</p>
+}
+
+
+<form action="/book/new" method="post">
+  <label for="book-title">Booktitle:</label>
+  <input id="book-title" title="book-title" type="text">
+  <button type="submit">Add a new book</button>
+</form>
+
+<p><a href="/">Return to Main Page</a></p>

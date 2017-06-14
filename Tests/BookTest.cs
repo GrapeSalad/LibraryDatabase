@@ -20,6 +20,7 @@ namespace LibraryTests
      Book.DeleteAll();
      Author.DeleteAll();
      Genre.DeleteAll();
+     Patron.DeleteAll();
     }
 
     [Fact]
