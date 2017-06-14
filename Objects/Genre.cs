@@ -178,7 +178,41 @@ namespace Library.Objects
       }
     }
 
-    public List<Book> GetBooks()
+    public void AddAuthorToGenre_AuthorJoinTable(Author newAuthor)
+    {
+      SqlConnection conn = DB.Connection();
+      conn.Open();
+
+      SqlCommand cmd = new SqlCommand("INSERT INTO genres_authors (genre_id, author_id) OUTPUT INSERTED.author_id VALUES (@GenreId, @AuthorId);", conn);
+
+      SqlParameter authorIdParameter = new SqlParameter();
+      authorIdParameter.ParameterName = "@AuthorId";
+      authorIdParameter.Value = newAuthor.GetId();
+
+      SqlParameter genreIdParameter = new SqlParameter();
+      genreIdParameter.ParameterName = "@GenreId";
+      genreIdParameter.Value = this.GetId();
+
+      cmd.Parameters.Add(authorIdParameter);
+      cmd.Parameters.Add(genreIdParameter);
+
+      SqlDataReader rdr = cmd.ExecuteReader();
+      while (rdr.Read())
+      {
+        newAuthor.SetId(rdr.GetInt32(0));
+      }
+
+      if (rdr != null)
+      {
+        rdr.Close();
+      }
+      if (conn != null)
+      {
+        conn.Close();
+      }
+    }
+
+    public List<Book> GetBooksByGenreId()
     {
       SqlConnection conn = DB.Connection();
       conn.Open();
@@ -212,6 +246,43 @@ namespace Library.Objects
       }
       return books;
     }
+
+    public List<Author> GetAuthorsByGenreId()
+    {
+      SqlConnection conn = DB.Connection();
+      conn.Open();
+
+      SqlCommand cmd = new SqlCommand("SELECT authors.* FROM genres JOIN genres_authors ON (genres.id = genres_authors.genre_id) JOIN authors ON (genres_authors.author_id = authors.id) WHERE genres.id = @GenreId;", conn);
+      SqlParameter genreIdParameter = new SqlParameter();
+      genreIdParameter.ParameterName = "@GenreId";
+      genreIdParameter.Value = this.GetId().ToString();
+
+      cmd.Parameters.Add(genreIdParameter);
+
+      SqlDataReader rdr = cmd.ExecuteReader();
+
+      List<Author> authors = new List<Author>{};
+
+      while(rdr.Read())
+      {
+        int authorId = rdr.GetInt32(0);
+        string authorTitle = rdr.GetString(1);
+        Author newAuthor = new Author(authorTitle, authorId);
+        authors.Add(newAuthor);
+      }
+
+      if (rdr != null)
+      {
+        rdr.Close();
+      }
+      if (conn != null)
+      {
+        conn.Close();
+      }
+      return authors;
+    }
+
+
 
   }
 }

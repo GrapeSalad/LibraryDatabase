@@ -244,7 +244,7 @@ namespace Library.Objects
       }
     }
 
-    public List<Genre> GetGenres()
+    public List<Genre> GetGenresByBookId()
     {
       SqlConnection conn = DB.Connection();
       conn.Open();

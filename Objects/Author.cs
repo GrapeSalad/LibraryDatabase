@@ -176,6 +176,39 @@ namespace Library.Objects
       }
     }
 
+    public void AddGenre(Genre newGenre)
+    {
+      SqlConnection conn = DB.Connection();
+      conn.Open();
+
+      SqlCommand cmd = new SqlCommand("INSERT INTO genres_authors (genre_id, author_id) OUTPUT INSERTED.genre_id VALUES (@GenreId, @AuthorId);", conn);
+
+      SqlParameter genreIdParameter = new SqlParameter();
+      genreIdParameter.ParameterName = "@GenreId";
+      genreIdParameter.Value = newGenre.GetId();
+      cmd.Parameters.Add(genreIdParameter);
+
+      SqlParameter authorIdParameter = new SqlParameter();
+      authorIdParameter.ParameterName = "@AuthorId";
+      authorIdParameter.Value = this.GetId();
+      cmd.Parameters.Add(authorIdParameter);
+
+      SqlDataReader rdr = cmd.ExecuteReader();
+      while (rdr.Read())
+      {
+        newGenre.SetId(rdr.GetInt32(0));
+      }
+
+      if (rdr != null)
+      {
+        rdr.Close();
+      }
+      if (conn != null)
+      {
+        conn.Close();
+      }
+    }
+
     public List<Book> GetBooks()
     {
       SqlConnection conn = DB.Connection();
@@ -210,6 +243,42 @@ namespace Library.Objects
       }
       return books;
     }
+
+    public List<Genre> GetGenresByAuthorId()
+    {
+      SqlConnection conn = DB.Connection();
+      conn.Open();
+
+      SqlCommand cmd = new SqlCommand("SELECT genres.* FROM authors JOIN genres_authors ON (authors.id = genres_authors.author_id) JOIN genres ON (genres_authors.genre_id = genres.id) WHERE authors.id = @AuthorId;", conn);
+      SqlParameter authorIdParameter = new SqlParameter();
+      authorIdParameter.ParameterName = "@AuthorId";
+      authorIdParameter.Value = this.GetId().ToString();
+
+      cmd.Parameters.Add(authorIdParameter);
+
+      SqlDataReader rdr = cmd.ExecuteReader();
+
+      List<Genre> genres = new List<Genre>{};
+
+      while(rdr.Read())
+      {
+        int genreId = rdr.GetInt32(0);
+        string genreName = rdr.GetString(1);
+        Genre newGenre = new Genre(genreName, genreId);
+        genres.Add(newGenre);
+      }
+
+      if (rdr != null)
+      {
+        rdr.Close();
+      }
+      if (conn != null)
+      {
+        conn.Close();
+      }
+      return genres;
+    }
+
 
   }
 }

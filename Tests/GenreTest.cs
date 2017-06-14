@@ -95,10 +95,29 @@ namespace LibraryTests
 
       testGenre.AddBookToBooks_GenresJoinTable(testBook1);
       testGenre.AddBookToBooks_GenresJoinTable(testBook2);
-      List<Book> savedBooks = testGenre.GetBooks();
+      List<Book> savedBooks = testGenre. GetBooksByGenreId();
       List<Book> testList = new List<Book> {testBook1, testBook2};
 
       Assert.Equal(testList, savedBooks);
+    }
+
+    [Fact]
+    public void GetAuthors_ReturnsAll_Genres_AuthorList()
+    {
+      Genre testGenre = new Genre("Harlequin-Romance");
+      testGenre.Save();
+      Author testAuthor1 = new Author("Christopher Tolkien");
+      testAuthor1.Save();
+      Author testAuthor2 = new Author("Douglas Adams");
+      testAuthor2.Save();
+
+      testGenre.AddAuthorToGenre_AuthorJoinTable(testAuthor1);
+      testGenre.AddAuthorToGenre_AuthorJoinTable(testAuthor2);
+
+      List<Author> savedAuthors = testGenre.GetAuthorsByGenreId();
+      List<Author> testList = new List<Author> {testAuthor1, testAuthor2};
+
+      Assert.Equal(testList, savedAuthors);
     }
 
   }

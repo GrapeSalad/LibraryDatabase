@@ -122,7 +122,7 @@ namespace LibraryTests
       testBook.AddGenreToBook(testGenre2);
       testBook.AddGenreToBook(testGenre3);
 
-      List<Genre> savedGenres = testBook.GetGenres();
+      List<Genre> savedGenres = testBook. GetGenresByBookId();
       List<Genre> testList = new List<Genre> {testGenre, testGenre2, testGenre3};
 
       Assert.Equal(testList, savedGenres);

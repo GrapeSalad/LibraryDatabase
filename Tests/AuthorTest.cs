@@ -102,5 +102,24 @@ namespace LibraryTests
       Assert.Equal(testList, savedBooks);
     }
 
+    [Fact]
+    public void GetGenres_ReturnsAllAuthors_GenreList()
+    {
+
+      Author testAuthor = new Author("Christopher Tolkien");
+      testAuthor.Save();
+      Genre testGenre1 = new Genre("Harlequin-Romance");
+      testGenre1.Save();
+      Genre testGenre2 = new Genre("Harlequin-Romance");
+      testGenre2.Save();
+
+      testAuthor.AddGenre(testGenre1);
+      testAuthor.AddGenre(testGenre2);
+      List<Genre> savedGenres = testAuthor.GetGenresByAuthorId();
+      List<Genre> testList = new List<Genre> {testGenre1, testGenre2};
+
+      Assert.Equal(testList, savedGenres);
+    }
+
   }
 }
