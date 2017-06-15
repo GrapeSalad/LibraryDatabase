@@ -1,0 +1,37 @@
+<h1>Edit book<h1>
+<hr/>
+<br>
+<h2> Edit Book: @Model["book"].GetTitle()</h2>
+<form  action="/book/@Model["book"].GetId()/edit_title" method="post">
+  <input type="hidden" name="_method" value="PATCH">
+  <input name="book-id" type="hidden" value="@Model["book"].GetId()">
+  <label for ="book-title">Book title</label>
+  <input id="book-title" name="book-title" type="text">
+  <button type="submit">Submit</button>
+</form>
+
+<form action="/book/@Model["book"].GetId()/edit_author" method="post">
+  <input name="book-id" type="hidden" value="@Model["book"].GetId()">
+  <label for="author-name">Add Author to book</label>
+  <select name="author-id">
+    @foreach (var author in @Model["author"])
+    {
+      <option value="@author.GetId()">@author.GetName()</option>
+    }
+  </select>
+  <button type="submit">Add</button>
+</form>
+
+<form action="/book/@Model["book"].GetId()/edit_genre" method="post">
+  <input name="book-id" type="hidden" value="@Model["book"].GetId()">
+  <label for="genre-name">Add Genre to book</label>
+  <select name="genre-id">
+    @foreach (var genre in @Model["genre"])
+    {
+      <option value="@genre.GetId()">@genre.GetName()</option>
+    }
+  </select>
+  <button type="submit">Add</button>
+</form>
+
+<p><a href="/">Return to Main Page</a></p>

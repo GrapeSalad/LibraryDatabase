@@ -279,5 +279,38 @@ namespace Library.Objects
       return genres;
     }
 
+    public void Update(string newTitle)
+    {
+      SqlConnection conn = DB.Connection();
+      conn.Open();
+      SqlCommand cmd = new SqlCommand("UPDATE books SET title = @NewTitle OUTPUT INSERTED.title WHERE id = @BookId;", conn);
+
+      SqlParameter newTitleParameter = new SqlParameter();
+      newTitleParameter.ParameterName = "@NewTitle";
+      newTitleParameter.Value = newTitle;
+      cmd.Parameters.Add(newTitleParameter);
+
+      SqlParameter bookIdParameter = new SqlParameter();
+      bookIdParameter.ParameterName = "@BookId";
+      bookIdParameter.Value = this.GetId();
+      cmd.Parameters.Add(bookIdParameter);
+
+      SqlDataReader rdr = cmd.ExecuteReader();
+      while(rdr.Read())
+      {
+        this._title = rdr.GetString(0);
+      }
+
+      if (rdr != null)
+      {
+        rdr.Close();
+      }
+
+      if (conn != null)
+      {
+        conn.Close();
+      }
+    }
+
   }
 }

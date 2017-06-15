@@ -7,7 +7,7 @@
   <ul>
     @foreach (var book in Model)
     {
-      <li><a href='/books/@book.GetId()'>@book.GetTitle()</a></li>
+      <li><a href='/book/@book.GetId()'>@book.GetTitle()</a></li>
     }
   </ul>
 }
@@ -18,8 +18,8 @@ else
 
 
 <form action="/book/new" method="post">
-  <label for="book-title">Booktitle:</label>
-  <input id="book-title" title="book-title" type="text">
+  <label for="book-title">Book title:</label>
+  <input id="book-title" name="book-title" type="text">
   <button type="submit">Add a new book</button>
 </form>
 
