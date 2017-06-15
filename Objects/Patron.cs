@@ -143,5 +143,74 @@ namespace Library.Objects
       return foundPatron;
     }
 
+    public void AddCopyByPatronID(Copy newCopy)
+    {
+      SqlConnection conn = DB.Connection();
+      conn.Open();
+
+      SqlCommand cmd = new SqlCommand("INSERT INTO checkouts (copy_id, patron_id) OUTPUT INSERTED.copy_id VALUES (@CopyId, @PatronId);", conn);
+
+      SqlParameter copyIdParameter = new SqlParameter();
+      copyIdParameter.ParameterName = "@CopyId";
+      copyIdParameter.Value = newCopy.GetId();
+      cmd.Parameters.Add(copyIdParameter);
+
+      SqlParameter patronIdParameter = new SqlParameter();
+      patronIdParameter.ParameterName = "@PatronId";
+      patronIdParameter.Value = this.GetId();
+      cmd.Parameters.Add(patronIdParameter);
+
+      SqlDataReader rdr = cmd.ExecuteReader();
+      while (rdr.Read())
+      {
+        newCopy.SetId(rdr.GetInt32(0));
+      }
+
+      if (rdr != null)
+      {
+        rdr.Close();
+      }
+      if (conn != null)
+      {
+        conn.Close();
+      }
+    }
+
+    public List<Copy> GetCopies()
+    {
+      SqlConnection conn = DB.Connection();
+      conn.Open();
+
+      SqlCommand cmd = new SqlCommand("SELECT copies.* FROM patrons JOIN checkouts ON (patrons.id = checkouts.patron_id) JOIN copies ON (checkouts.copy_id = copies.id) WHERE patrons.id = @PatronId;", conn);
+      SqlParameter patronIdParameter = new SqlParameter();
+      patronIdParameter.ParameterName = "@PatronId";
+      patronIdParameter.Value = this.GetId().ToString();
+
+      cmd.Parameters.Add(patronIdParameter);
+
+      SqlDataReader rdr = cmd.ExecuteReader();
+
+      List<Copy> copies = new List<Copy>{};
+
+      while(rdr.Read())
+      {
+        int copyId = rdr.GetInt32(0);
+        bool copyStatus = rdr.GetBoolean(1);
+        int bookId = rdr.GetInt32(2);
+        Copy newCopy = new Copy(copyStatus, bookId, copyId);
+        copies.Add(newCopy);
+      }
+
+      if (rdr != null)
+      {
+        rdr.Close();
+      }
+      if (conn != null)
+      {
+        conn.Close();
+      }
+      return copies;
+    }
+
   }
 }
