@@ -110,6 +110,34 @@ namespace Library.Objects
       return allBooks;
     }
 
+    public static List<Book> GetAllAvailable()
+    {
+      List<Book> availableBooks = new List<Book>{};
+
+      SqlConnection conn = DB.Connection();
+      conn.Open();
+
+      SqlCommand cmd = new SqlCommand("SELECT * FROM books JOIN copies ON books.id = copies.book_id AND copies.status = 0;", conn);
+      SqlDataReader rdr = cmd.ExecuteReader();
+
+      while(rdr.Read())
+      {
+        int bookId = rdr.GetInt32(0);
+        string bookName = rdr.GetString(1);
+        Book newBook = new Book(bookName, bookId);
+        availableBooks.Add(newBook);
+      }
+      if (rdr != null)
+      {
+        rdr.Close();
+      }
+      if (conn != null)
+      {
+        conn.Close();
+      }
+      return availableBooks;
+    }
+
     public static Book Find(int id)
     {
       SqlConnection conn = DB.Connection();

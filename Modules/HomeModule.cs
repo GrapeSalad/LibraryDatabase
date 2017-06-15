@@ -18,6 +18,12 @@ namespace Library.Module
       Get["/librarian"] = _ => {
         return View["librarian.cshtml"];
       };
+
+      Get["/patron"] = _ => {
+        List<Book> availableBooks = Book.GetAllAvailable();
+        return View["patron.cshtml", availableBooks];
+      };
+
       //VIEW ALL BOOKS AND ADD NEW BOOK
       Get["/book/new"] = _ => {
         List<Book> allBooks = Book.GetAll();
