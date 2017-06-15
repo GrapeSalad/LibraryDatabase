@@ -1,15 +1,37 @@
+@{
+  Layout="Shared/_Layout.cshtml";
+}
+
+
 <h1>Edit Genre<h1>
 <hr/>
 <br>
 <h2> Edit Genre: @Model["genre"].GetName()</h2>
+<br>
+<p>Book:</p>
+<ul>
+  @foreach (var book in @Model["specificBook"])
+  {
+    <li>@book.GetTitle()</li>
+  }
+</ul>
+<p>Author:</p>
+<ul>
+  @foreach (var author in @Model["specificAuthor"])
+  {
+    <li>@author.GetName()</li>
+  }
+</ul>
+<br>
+
 <form  action="/genre/@Model["genre"].GetId()/edit_name" method="post">
   <input type="hidden" name="_method" value="PATCH">
   <input name="genre-id" type="hidden" value="@Model["genre"].GetId()">
-  <label for ="genre-name">Genre name</label>
+  <label for ="genre-name">Change Genre name</label>
   <input id="genre-name" name="genre-name" type="text">
   <button type="submit">Submit</button>
 </form>
-
+<br>
 <form action="/genre/@Model["genre"].GetId()/edit_book" method="post">
   <input name="genre-id" type="hidden" value="@Model["genre"].GetId()">
   <label for="book-title">Add book to genre</label>
@@ -21,7 +43,7 @@
   </select>
   <button type="submit">Add</button>
 </form>
-
+<br>
 <form action="/genre/@Model["genre"].GetId()/edit_author" method="post">
   <input name="genre-id" type="hidden" value="@Model["genre"].GetId()">
   <label for="author-name">Add Author to genre</label>
@@ -33,5 +55,5 @@
   </select>
   <button type="submit">Add</button>
 </form>
-
+<br>
 <p><a href="/">Return to Main Page</a></p>

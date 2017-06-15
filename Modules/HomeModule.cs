@@ -35,21 +35,42 @@ namespace Library.Module
       };
       //FORM TO ADD NEW BOOK TO DATABASE library TABLE books
       Post["/book/new"] = _ => {
-        Book newBook = new Book(Request.Form["book-title"]);
-        newBook.Save();
-        return View["success.cshtml"];
+        string testIfEmpty = Request.Form["book-title"];
+        if (testIfEmpty != "")
+        {
+          Book newBook = new Book(Request.Form["book-title"]);
+          newBook.Save();
+          return View["success.cshtml"];
+        }
+        else {
+          return View["dun_gooft.cshtml"];
+        }
       };
       //FORM TO ADD NEW AUTHOR TO DATABASE library TABLE authors
       Post["/author/new"] = _ => {
-        Author newAuthor = new Author(Request.Form["author-name"]);
-        newAuthor.Save();
-        return View["success.cshtml"];
+        string testIfEmpty = Request.Form["author-name"];
+        if (testIfEmpty != "")
+        {
+          Author newAuthor = new Author(Request.Form["author-name"]);
+          newAuthor.Save();
+          return View["success.cshtml"];
+        }
+        else {
+          return View["dun_gooft.cshtml"];
+        }
       };
       //FORM TO ADD NEW GENRE TO DATABASE library TABLE genres
       Post["/genre/new"] = _ => {
-        Genre newGenre = new Genre(Request.Form["genre-name"]);
-        newGenre.Save();
-        return View["success.cshtml"];
+        string testIfEmpty = Request.Form["genre-name"];
+        if (testIfEmpty != "")
+        {
+          Genre newGenre = new Genre(Request.Form["genre-name"]);
+          newGenre.Save();
+          return View["success.cshtml"];
+        }
+        else{
+          return View["dun_gooft.cshtml"];
+        }
       };
 //BOOKS EDITING AND VIEWING
       //VIEW SINGLE BOOK, PASS INFORMATION TO THE PAGE TO VIEW NEEDED DETAILS
@@ -58,9 +79,13 @@ namespace Library.Module
         Book SelectedBook = Book.Find(parameters.id);
         List<Author> allAuthors = Author.GetAll();
         List<Genre> allGenres = Genre.GetAll();
+        List<Author> specificAuthors = SelectedBook.GetAuthors();
+        List<Genre> specificGenres = SelectedBook.GetGenresByBookId();
         model.Add("book", SelectedBook);
         model.Add("author", allAuthors);
         model.Add("genre", allGenres);
+        model.Add("specificAuthor", specificAuthors);
+        model.Add("specificGenre", specificGenres);
         return View["book_edit.cshtml", model];
       };
       //ASSOCIATES AUTHOR WITH BOOK, VIA THE JOIN TABLE ACCESSED BY THE AddAuthorToJoinTable METHOD
@@ -90,9 +115,13 @@ namespace Library.Module
         Author selectedAuthor = Author.Find(parameters.id);
         List<Book> allBooks = Book.GetAll();
         List<Genre> allGenres = Genre.GetAll();
+        List<Book> specificBooks = selectedAuthor.GetBooks();
+        List<Genre> specificGenres = selectedAuthor.GetGenresByAuthorId();
         model.Add("author", selectedAuthor);
         model.Add("books", allBooks);
         model.Add("genres", allGenres);
+        model.Add("specificBook", specificBooks);
+        model.Add("specificGenre", specificGenres);
         return View["author_edit.cshtml", model];
       };
 
@@ -115,9 +144,13 @@ namespace Library.Module
         Genre selectedGenre = Genre.Find(parameters.id);
         List<Book> allBooks = Book.GetAll();
         List<Author> allAuthors = Author.GetAll();
+        List<Author> specificAuthors = selectedGenre.GetAuthorsByGenreId();
+        List<Book> specificBooks = selectedGenre.GetBooksByGenreId();
         model.Add("genre", selectedGenre);
         model.Add("book", allBooks);
         model.Add("author", allAuthors);
+        model.Add("specificAuthor", specificAuthors);
+        model.Add("specificBook", specificBooks);
         return View["genre_edit.cshtml", model];
       };
 

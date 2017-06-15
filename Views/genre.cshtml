@@ -1,6 +1,11 @@
+@{
+  Layout="Shared/_Layout.cshtml";
+}
+
+
 <h1>Add Genre</h1>
 <hr />
-
+<br>
 <h2>Genre:</h2>
 @if (Model.Count != 0)
 {
@@ -17,11 +22,11 @@ else
 {
   <p>AINT NOTHIN</p>
 }
-
+<br>
 <form action="/genre/new" method="post">
   <label for="genre-name">Genre name:</label>
   <input id="genre-name" name="genre-name" type="text">
   <button type="submit">Add a new Genre</button>
 </form>
-
+<br>
 <p><a href="/">Return to Main Page</a></p>

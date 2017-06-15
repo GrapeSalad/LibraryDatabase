@@ -1,11 +1,16 @@
+@{
+  Layout="Shared/_Layout.cshtml";
+}
+
+
 <h1>Add Boook</h1>
 <hr />
-
-<h2>Book:</h2>
+<br>
+<h2>Books:</h2>
 @if (Model.Count != 0)
 {
   <ul>
-    @foreach (var book in Model)
+    @foreach (var book in @Model)
     {
       <li><a href='/book/@book.GetId()'>@book.GetTitle()</a></li>
     }
@@ -15,12 +20,12 @@ else
 {
   <p>AINT NOTHIN</p>
 }
-
+<br>
 
 <form action="/book/new" method="post">
   <label for="book-title">Book title:</label>
   <input id="book-title" name="book-title" type="text">
   <button type="submit">Add a new book</button>
 </form>
-
+<br>
 <p><a href="/">Return to Main Page</a></p>
