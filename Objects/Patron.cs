@@ -81,5 +81,67 @@ namespace Library.Objects
       return allPatrons;
     }
 
+    public void Save()
+    {
+      SqlConnection conn = DB.Connection();
+      conn.Open();
+
+      SqlCommand cmd = new SqlCommand("INSERT INTO patrons (name) OUTPUT INSERTED.id VALUES (@PatronName)", conn);
+
+      SqlParameter nameParam = new SqlParameter();
+      nameParam.ParameterName = "@PatronName";
+      nameParam.Value = this.GetName();
+
+      cmd.Parameters.Add(nameParam);
+
+      SqlDataReader rdr = cmd.ExecuteReader();
+
+      while(rdr.Read())
+      {
+        this._id = rdr.GetInt32(0);
+      }
+      if (rdr != null)
+      {
+        rdr.Close();
+      }
+      if (conn != null)
+      {
+        conn.Close();
+      }
+    }
+
+    public static Patron Find(int id)
+    {
+      SqlConnection conn = DB.Connection();
+      conn.Open();
+
+      SqlCommand cmd = new SqlCommand("SELECT * FROM patrons WHERE id = @PatronId", conn);
+      SqlParameter patronIdParameter = new SqlParameter();
+      patronIdParameter.ParameterName = "@PatronId";
+      patronIdParameter.Value = id.ToString();
+      cmd.Parameters.Add(patronIdParameter);
+      SqlDataReader rdr = cmd.ExecuteReader();
+
+      int foundPatronId = 0;
+      string foundPatronName = null;
+
+      while(rdr.Read())
+      {
+        foundPatronId = rdr.GetInt32(0);
+        foundPatronName = rdr.GetString(1);
+      }
+      Patron foundPatron = new Patron(foundPatronName, foundPatronId);
+
+      if (rdr != null)
+      {
+        rdr.Close();
+      }
+      if (conn != null)
+      {
+        conn.Close();
+      }
+      return foundPatron;
+    }
+
   }
 }

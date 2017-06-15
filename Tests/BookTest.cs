@@ -21,6 +21,7 @@ namespace LibraryTests
      Author.DeleteAll();
      Genre.DeleteAll();
      Patron.DeleteAll();
+     Copy.DeleteAll();
     }
 
     [Fact]
@@ -82,6 +83,23 @@ namespace LibraryTests
 
       //Assert
       Assert.Equal(testBook, result);
+    }
+
+    [Fact]
+    public void TestToSeeIf_BookCanHaveManyCopies()
+    {
+      Book newBook = new Book("My Tentacle Lover 2, the Re-Tentacling");
+      newBook.Save();
+      Console.WriteLine(newBook.GetId());
+      Copy copy1 = new Copy(false, newBook.GetId());
+      copy1.Save();
+      Copy copy2 = new Copy(true, newBook.GetId());
+      copy2.Save();
+
+      List<Copy> testCopiesList = new List<Copy> {copy1, copy2};
+      Console.WriteLine("newBook ids = {0}, {1}", newBook.GetCopies()[0].GetId(), newBook.GetCopies()[1].GetId());
+      Console.WriteLine("testCopies ids = {0}, {1}", testCopiesList[0].GetId(), testCopiesList[1].GetId());
+      Assert.Equal(newBook.GetCopies(), testCopiesList);
     }
 
     [Fact]

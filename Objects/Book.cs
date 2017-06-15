@@ -143,6 +143,39 @@ namespace Library.Objects
       return foundBook;
     }
 
+    public List<Copy> GetCopies()
+    {
+      SqlConnection conn = DB.Connection();
+      conn.Open();
+
+      SqlCommand cmd = new SqlCommand("SELECT * FROM copies WHERE book_id = @BookId;", conn);
+      SqlParameter bookIdParameter = new SqlParameter();
+      bookIdParameter.ParameterName = "@BookId";
+      bookIdParameter.Value = this.GetId();
+
+      cmd.Parameters.Add(bookIdParameter);
+      SqlDataReader rdr = cmd.ExecuteReader();
+
+      List<Copy> copies = new List<Copy> {};
+      while(rdr.Read())
+      {
+        int copyId = rdr.GetInt32(0);
+        bool copyStatus = rdr.GetBoolean(1);
+        int bookId = rdr.GetInt32(2);
+        Copy newCopy = new Copy(copyStatus, bookId, copyId);
+        copies.Add(newCopy);
+      }
+      if (rdr != null)
+      {
+        rdr.Close();
+      }
+      if (conn != null)
+      {
+        conn.Close();
+      }
+      return copies;
+    }
+
     public void AddAuthorToJoinTable(Author newAuthor)
     {
       SqlConnection conn = DB.Connection();

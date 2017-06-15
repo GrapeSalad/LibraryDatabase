@@ -21,6 +21,7 @@ namespace LibraryTests
       Author.DeleteAll();
       Genre.DeleteAll();
       Patron.DeleteAll();
+      Copy.DeleteAll();
     }
 
     [Fact]

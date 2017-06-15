@@ -9,9 +9,9 @@ using Library.Objects;
 namespace LibraryTests
 {
   [Collection("LibraryTests")]
-  public class PatronTest : IDisposable
+  public class CopyTest : IDisposable
   {
-    public PatronTest()
+    public CopyTest()
     {
       DBConfiguration.ConnectionString = "Data Source=(localdb)\\mssqllocaldb;Initial Catalog=library_test;Integrated Security=SSPI;";
     }
@@ -27,31 +27,30 @@ namespace LibraryTests
     [Fact]
     public void Test_DatabaseEmptyAtFirst()
     {
-     int result = Patron.GetAll().Count;
+     int result = Copy.GetAll().Count;
      Assert.Equal(0, result);
     }
 
     [Fact]
-    public void Test_Equal_ReturnsTrueIfPatronsAreTheSame()
+    public void Test_Equal_ReturnsTrueIfCopiesAreTheSame()
     {
-     Patron firstPatron = new Patron("Guy Anderson");
-     Patron secondPatron = new Patron("Guy Anderson");
-     Assert.Equal(firstPatron, secondPatron);
+     Copy firstCopy = new Copy(false, 1);
+     Copy secondCopy = new Copy(false, 1);
+     Assert.Equal(firstCopy, secondCopy);
     }
 
     [Fact]
-    public void Find_FindsPatronInDatabase_True()
+    public void Find_FindsCopyInDatabase_True()
     {
       //Arrange
-      Patron testPatron = new Patron("Bob");
-      testPatron.Save();
+      Copy testCopy = new Copy(true, 3);
+      testCopy.Save();
 
       //Act
-      Patron result = Patron.Find(testPatron.GetId());
+      Copy result = Copy.Find(testCopy.GetId());
 
       //Assert
-      Assert.Equal(testPatron, result);
+      Assert.Equal(testCopy, result);
     }
-
   }
 }
